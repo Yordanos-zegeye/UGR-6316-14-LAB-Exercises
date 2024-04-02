@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
                 ),
               ),
               Text(
-                "1975 Porsch 911 carrera",
+                "1975 Porsch 911 carrera.",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
               ),
               Row(
