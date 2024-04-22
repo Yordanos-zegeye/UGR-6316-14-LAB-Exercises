@@ -1,27 +1,25 @@
-// import 'dart:js';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
-  runApp(BlocProvider(
-    create: (context) => CounterBloc(),
-    child: MyApp(),
-  ));
+  runApp(
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
-abstract class CounterEvent {}
+class CounterNotifier extends StateNotifier<int> {
+  CounterNotifier() : super(0);
 
-class CounterIncrementPressed extends CounterEvent {}
-
-class CounterDecrementPressed extends CounterEvent {}
-
-class CounterBloc extends Bloc<CounterEvent, int> {
-  CounterBloc() : super(0) {
-    on<CounterIncrementPressed>((event, emit) => emit(state + 1));
-    on<CounterDecrementPressed>((event, emit) => emit(state - 1));
-  }
+  void increment() => state++;
+  void decrement() => state--;
 }
+
+final counterNotifierProvider =
+    StateNotifierProvider<CounterNotifier, int>((ref) {
+  return CounterNotifier();
+});
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -39,18 +37,19 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends ConsumerStatefulWidget {
   const MyHomePage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  ConsumerState<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends ConsumerState<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    int counter = ref.watch(counterNotifierProvider);
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -63,12 +62,10 @@ class _MyHomePageState extends State<MyHomePage> {
               const Text(
                 'You have pushed the button this many times:',
               ),
-              BlocBuilder<CounterBloc, int>(builder: (context, state) {
-                return Text(
-                  state.toString(),
-                  style: Theme.of(context).textTheme.headlineMedium,
-                );
-              })
+              Text(
+                counter.toString(),
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
             ],
           ),
         ),
@@ -77,16 +74,14 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             FloatingActionButton(
               onPressed: () {
-                BlocProvider.of<CounterBloc>(context)
-                    .add(CounterIncrementPressed());
+                ref.watch(counterNotifierProvider.notifier).increment();
               },
               tooltip: 'Increment',
               child: const Icon(Icons.add),
             ),
             FloatingActionButton(
               onPressed: () {
-                BlocProvider.of<CounterBloc>(context)
-                    .add(CounterDecrementPressed());
+                ref.watch(counterNotifierProvider.notifier).decrement();
               },
               tooltip: 'Decrement',
               child: const Icon(Icons.remove),
