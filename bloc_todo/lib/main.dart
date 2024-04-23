@@ -43,6 +43,10 @@ class TodoService {
   }
 }
 
+abstract class TodoEvent {}
+
+class FetchTodoEvent extends TodoEvent {}
+
 abstract class TodoState {}
 
 class InitTodoState extends TodoState {}
@@ -59,7 +63,7 @@ class ResponseTodoState extends TodoState {
   ResponseTodoState(this.todos);
 }
 
-class TodoBloc extends Cubit<TodoState> {
+class TodoBloc extends Bloc<TodoEvent, TodoState> {
   final TodoService _service;
   TodoBloc(this._service) : super(InitTodoState());
 
