@@ -108,19 +108,19 @@ class _HomePageState extends State<HomePage> {
             itemBuilder: (context, index) {
               final todo = todos[index];
               return ListTile(
-                leading: CircleAvatar(
-                  child: Text(todo.id.toString()),
-                ),
-                title: Text(
-                  todo.title,
-                  style: TextStyle(
-                    decoration: todo.completed
-                        ? TextDecoration.lineThrough
-                        : TextDecoration.none,
-                    color: todo.completed ? Colors.grey : Colors.black,
+                  leading: CircleAvatar(
+                    child: Text(todo.id.toString()),
                   ),
-                ),
-              );
+                  title: Text(
+                    todo.title,
+                    style: TextStyle(
+                      decoration: todo.completed
+                          ? TextDecoration.lineThrough
+                          : TextDecoration.none,
+                      color: todo.completed ? Colors.grey : Colors.black,
+                    ),
+                  ),
+                  trailing: Text("UserId${todo.userId}"));
             });
       }),
     );
